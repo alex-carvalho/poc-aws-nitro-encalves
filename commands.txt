@@ -1,6 +1,6 @@
 
 # start a ec2 instance compatible and with enclaves enabled
-aws ec2 run-instances --image-id ami-081dc0707789c2daf --count 1 --instance-type c7g.large --key-name poc --enclave-options "Enabled=true"
+aws ec2 run-instances --image-id ami-081dc0707789c2daf --count 1 --instance-type c7g.xlarge --key-name poc --enclave-options "Enabled=true"
 
 
 # install nitro enclaves
