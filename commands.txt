@@ -1,0 +1,37 @@
+
+# start a ec2 instance compatible and with enclaves enabled
+aws ec2 run-instances --image-id ami-081dc0707789c2daf --count 1 --instance-type c7g.large --key-name poc --enclave-options "Enabled=true"
+
+
+# install nitro enclaves
+sudo amazon-linux-extras install aws-nitro-enclaves-cli
+
+# install nitro enclaves developer (build images)
+sudo yum install aws-nitro-enclaves-cli-devel -y
+
+# start docker service to build docker images
+sudo systemctl start docker && sudo systemctl enable docker
+
+# start enclaves service
+sudo systemctl start nitro-enclaves-allocator.service && sudo systemctl enable nitro-enclaves-allocator.service
+
+# show the example
+ls -la /usr/share/nitro_enclaves/examples/hello
+
+sudo docker build /usr/share/nitro_enclaves/examples/hello -t hello
+
+sudo docker image ls
+
+sudo nitro-cli build-enclave --docker-uri hello:latest --output-file hello.eif
+
+sudo nitro-cli run-enclave --cpu-count 2 --memory 512 --enclave-cid 16 --eif-path hello.eif --debug-mode
+
+sudo nitro-cli describe-enclaves
+
+sudo nitro-cli console --enclave-id
+
+cat  /usr/share/nitro_enclaves/examples/hello/Dockerfile
+
+cat  /usr/share/nitro_enclaves/examples/hello/hello.sh
+
+sudo nitro-cli terminate-enclave --enclave-id
