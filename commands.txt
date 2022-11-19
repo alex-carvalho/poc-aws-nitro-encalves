@@ -2,7 +2,6 @@
 # start a ec2 instance compatible and with enclaves enabled
 aws ec2 run-instances --image-id ami-081dc0707789c2daf --count 1 --instance-type c7g.xlarge --key-name poc --enclave-options "Enabled=true"
 
-
 # install nitro enclaves
 sudo amazon-linux-extras install aws-nitro-enclaves-cli
 
@@ -24,14 +23,27 @@ sudo docker image ls
 
 sudo nitro-cli build-enclave --docker-uri hello:latest --output-file hello.eif
 
-sudo nitro-cli run-enclave --cpu-count 2 --memory 512 --enclave-cid 16 --eif-path hello.eif --debug-mode
+sudo nitro-cli run-enclave --cpu-count 2 --memory 512 --enclave-cid 5 --eif-path hello.eif --debug-mode
 
 sudo nitro-cli describe-enclaves
 
-sudo nitro-cli console --enclave-id
+sudo nitro-cli console --enclave-name hello
 
 cat  /usr/share/nitro_enclaves/examples/hello/Dockerfile
 
 cat  /usr/share/nitro_enclaves/examples/hello/hello.sh
 
-sudo nitro-cli terminate-enclave --enclave-id
+sudo nitro-cli terminate-enclave --enclave-name hello
+
+
+
+# token enclave
+sudo docker build . -t token-enclave
+
+sudo nitro-cli build-enclave --docker-uri token-enclave:latest --output-file token-enclave.eif
+
+sudo nitro-cli run-enclave --cpu-count 2 --memory 256 --enclave-cid 5 --eif-path token-enclave.eif --debug-mode
+
+sudo nitro-cli describe-enclaves
+
+sudo nitro-cli console --enclave-name token-enclave
