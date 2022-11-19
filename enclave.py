@@ -37,7 +37,7 @@ class VsockListener:
 
     def proccess_data(self, data):
         print("recived: ", data)
-        print("decrypted: ", data[::-1])
+        print("processed: ", data[::-1])
 def main():
     server = VsockListener()
     server.bind(5000)
