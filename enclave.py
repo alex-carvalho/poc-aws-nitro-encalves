@@ -1,8 +1,5 @@
 
 import socket
-import sys
-
-
 
 class VsockListener:
     """Server"""
@@ -27,7 +24,7 @@ class VsockListener:
                     break
                 if not data:
                     break
-                print(data, end='', flush=True)
+                self.proccess_data(data)
             print()
             from_client.close()
 
@@ -38,6 +35,9 @@ class VsockListener:
             to_client.sendall(data)
             to_client.close()
 
+    def proccess_data(self, data):
+        print("recived: ", data)
+        print("decrypted: ", data[::-1])
 def main():
     server = VsockListener()
     server.bind(5000)

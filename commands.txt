@@ -38,6 +38,8 @@ sudo nitro-cli terminate-enclave --enclave-name hello
 
 
 # token enclave
+sudo nitro-cli terminate-enclave --all
+
 sudo docker build . -t token-enclave
 
 sudo nitro-cli build-enclave --docker-uri token-enclave:latest --output-file token-enclave.eif
@@ -47,3 +49,7 @@ sudo nitro-cli run-enclave --cpu-count 2 --memory 256 --enclave-cid 5 --eif-path
 sudo nitro-cli describe-enclaves
 
 sudo nitro-cli console --enclave-name token-enclave
+
+flask --app service run
+
+curl http://localhost:5000/token?card_token=abcd

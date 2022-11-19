@@ -1,6 +1,21 @@
 
 import socket
+from flask import Flask, request
 
+app = Flask(__name__)
+
+@app.route("/token")
+def hello_world():
+
+    card_token = request.args.get("card_token")
+    send_to_enclave(card_token)
+    return "It works!\n"
+
+def send_to_enclave(card_token):
+    client = VsockStream()
+    client.connect((5, 5000))
+    client.send_data(card_token.encode())
+    client.disconnect()
 
 class VsockStream:
     """Client"""
@@ -29,17 +44,3 @@ class VsockStream:
     def disconnect(self):
         """Close the client socket"""
         self.sock.close()
-
-
-def main():
-    client = VsockStream()
-    cid = 5
-    endpoint = (cid, 5000)
-    client.connect(endpoint)
-    msg = 'Hello, world!'
-    client.send_data(msg.encode())
-    client.disconnect()
-
-
-if __name__ == "__main__":
-    main()
